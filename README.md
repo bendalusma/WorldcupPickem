@@ -1,16 +1,55 @@
-# React + Vite
+# Pronostics Coupe du Monde 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+French-first World Cup 2026 prediction app for Ronald's pool. Participants use
+personal magic links to enter match predictions, while the admin can manage
+participants, backfill phone picks, and enter or override match results.
 
-Currently, two official plugins are available:
+## Current Status
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Stages 1-4 are committed on `main`.
+- Supabase schemas exist in `supabase/`.
+- Football-data.org fixture import exists in `scripts/import-fixtures.mjs`.
+- Admin login and participant management are wired in the React app.
+- `Résultats` reads matches from Supabase and groups them by tournament round.
+- `Mes Pronostics` and `Classement` are still placeholders for upcoming stages.
 
-## React Compiler
+## UI Decisions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- The results screen now uses collapsible round sections. Each round shows a
+  full-width dropdown button with an arrow and match count; clicking it expands
+  or hides that round's matches.
+- Expanded result rounds stay chronological, but matches are subdivided by day
+  and group-stage rows show a compact `Groupe A`/`Groupe B` style badge.
+- Participant-facing copy should stay in French.
+- The app is designed mobile-first because Ronald and participants will likely
+  use it from phones.
 
-## Expanding the ESLint configuration
+## Local Commands
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run check-db
+npm run import-fixtures
+npm run create-admin
+```
+
+## Environment
+
+Copy `.env.example` to `.env` and fill in the real values. Never commit `.env`.
+
+Required values:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `FOOTBALL_DATA_TOKEN`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+
+## Agent Notes
+
+Keep `AGENTS.md`, `CLAUDE.md`, and `PROJECT_BRIEF.md` aligned when project rules
+or product decisions change. Use Git commits often when Codex and Claude are both
+working on this repo.

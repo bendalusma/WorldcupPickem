@@ -172,7 +172,7 @@ One free API serves both needs.
 Backup source if needed: there's a free open-source World Cup 2026 API
 (github.com/rezarahiminia/worldcup2026) exposing games/groups/scores; keep as fallback only.
 
-## Current build state (as of 2026-06-12)
+## Current build state (as of 2026-06-13)
 
 ### Already done ✅
 
@@ -184,11 +184,16 @@ Backup source if needed: there's a free open-source World Cup 2026 API
 
 **Database (Supabase Postgres + RLS)**
 - All 4 tables created: `participants`, `matches`, `picks`, `special_picks`
-- Extra columns on `matches`: `status`, `score_home`, `score_away`, `crest_url` (for live scores / flags)
+- Extra columns on `matches`: `status`, `score_home`, `score_away`, `crest_url`, `result`, `result_locked`
 - `teams` lookup table for crest images
 - `is_admin()` SECURITY DEFINER function — avoids RLS recursion when checking admin status
-- Admin policies applied to all tables via `schema_stage4.sql`
-- All schema files live in `supabase/` (schema.sql, schema_stage3.sql, schema_stage4.sql)
+- `participants_public` view — safe anon-readable view (id, name, is_admin) without exposing tokens
+- `revealed_picks` view — only picks for matches where `kickoff_at <= now()` (prevents leaking future picks)
+- SECURITY DEFINER functions (in `supabase/schema_stage5.sql`, must be run in Supabase SQL Editor):
+  - `get_participant_by_token(p_token)` — validates magic-link token
+  - `get_my_picks(p_token)` — returns a participant's picks by token
+  - `submit_pick(p_token, p_match_id, p_predicted)` — upserts pick; validates lock
+- All schema files in `supabase/` (schema.sql, schema_stage3.sql, schema_stage4.sql, schema_stage5.sql)
 
 **Scripts (in `scripts/`)**
 - `npm run create-admin` — creates admin auth user(s) and participant rows
@@ -201,6 +206,7 @@ Backup source if needed: there's a free open-source World Cup 2026 API
 - Participants: custom magic-link tokens — URL format `/p/:token`, no Supabase Auth needed.
 - Token format: **first name only**, lowercased, hyphens preserved for compound names
   (e.g., `yves-marie`, `charles-philippe`, `marc-arthur`).
+- Participant session stored in `sessionStorage` (not Supabase Auth).
 
 **Participants & picks**
 - 43 participants imported. Round 1 picks imported (1031/1032 picks — Carrel Delpe
@@ -209,27 +215,33 @@ Backup source if needed: there's a free open-source World Cup 2026 API
   ENG-GHA → ENG-CRO); picks still mapped correctly because pick *values* were valid.
 
 **Frontend pages built**
-- `Résultats` — shows all matches grouped by round with live score / kickoff time
-- `Admin` — login form + participant CRUD (add, edit name inline, delete, copy magic link)
-- `Pronostics`, `Classement` — placeholder pages only
+- `Résultats` — all matches grouped by round with live score / kickoff time
+- `Admin` — login + participant CRUD (add, edit name inline, delete, copy magic link) + Results tab
+  - Results tab: `ResultsManager` component — set W/D/L per past match; updates `result` + `result_locked`
+- `Pronostics` — magic-link authenticated pick entry with per-match locking at `kickoff_at`
+  - Shows team crests + codes; pick buttons per match; lock icon once past kickoff
+  - "Changer" button to log out participant session
+- `Classement` — live leaderboard, 5 trophy columns (T1, T2, T3, RF, Total), sortable by column
+- `MagicLink` — `/p/:token` route; validates token via Supabase RPC, stores session, redirects
+
+**Context / providers**
+- `AuthProvider.jsx` + `AuthContext.js` + `useAuth.js` — admin Supabase Auth
+- `ParticipantProvider.jsx` + `ParticipantContext.js` + `useParticipant.js` — participant sessionStorage
 
 **UI utilities**
 - `src/lib/scoring.js` — ROUND_POINTS, ROUND_LABELS, SPECIAL_FIELDS, TROPHIES config
 - `src/lib/format.js` — `frDateTime(iso)` French date formatting
 - `src/lib/names.js` — `firstName(fullName)` extracts display name from stored full name
-- `src/lib/AuthProvider.jsx` — React context: session, isAdmin, loading, signIn, signOut
 
 ### What's next 🔜
 
-1. **Mes Pronostics** — magic-link login at `/p/:token`, pick entry UI (team buttons instead
-   of abstract W/D/L), per-match locking at kickoff_at.
-2. **Admin proxy picks** — admin enters/edits picks on behalf of any participant.
-3. **Admin results entry** — admin sets match results; `result_locked` flag prevents
-   auto-job from overwriting manual entries.
-4. **Classement** — leaderboard with 5 trophy columns (Tour 1–3, Ronde Finale, Total).
-5. **Résultats pick reveal** — after match locks, show all participants' picks for that match.
-6. **Auto-results cron** — Vercel cron job calls import-fixtures every ~30 min to update scores.
-7. **Deploy** — push to GitHub → connect Vercel → set env vars → live URL for WhatsApp sharing.
+1. **⚠️ Run `supabase/schema_stage5.sql`** in Supabase SQL Editor — adds the 3 RPC functions
+   needed for magic-link login and pick submission. App won't work without this.
+2. **Auto-results cron** — Vercel cron job (or Supabase scheduled function) polls
+   football-data.org every ~30 min; derives W/D/L from score; skips `result_locked` matches.
+3. **Résultats pick reveal** — after a match locks, show all participants' picks for it.
+4. **Admin proxy picks** — admin enters/edits picks on behalf of any participant.
+5. **Deploy** — push to GitHub → connect Vercel → set env vars → live URL for WhatsApp sharing.
 
 ## Build order (suggested MVP path)
 
@@ -237,11 +249,11 @@ Backup source if needed: there's a free open-source World Cup 2026 API
 2. ~~Register a football-data.org token; write the fixtures-import job and seed `matches`.~~ ✅
 3. ~~Admin auth + participant CRUD + magic-link token generation.~~ ✅
 4. ~~Bulk-import Round 1 participants + picks from spreadsheet.~~ ✅
-5. **Participant magic-link login + Mes Pronostics screen with per-match locking.** ← next
-6. Admin proxy pick entry + admin results entry / override.
-7. Scoring query + Classement screen.
-8. Résultats screen with per-match pick reveal.
-9. Auto-results scheduled job + knockout-fixture backfill.
+5. ~~Participant magic-link login + Mes Pronostics + Classement + Admin results tab.~~ ✅
+6. **Auto-results scheduled job + deploy to Vercel.** ← next
+7. Admin proxy pick entry.
+8. Résultats pick reveal.
+9. Knockout-fixture backfill + Final 4 special picks.
 10. Polish: French copy, mobile layout, deadline countdowns, deploy to Vercel.
 
 ## Open questions to confirm with Ronald

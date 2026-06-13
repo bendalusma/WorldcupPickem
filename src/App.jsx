@@ -3,6 +3,7 @@ import Pronostics from './pages/Pronostics.jsx'
 import Resultats from './pages/Resultats.jsx'
 import Classement from './pages/Classement.jsx'
 import Admin from './pages/Admin.jsx'
+import MagicLink from './pages/MagicLink.jsx'
 import './App.css'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/resultats" element={<Resultats />} />
           <Route path="/classement" element={<Classement />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/p/:token" element={<MagicLink />} />
         </Routes>
       </main>
     </div>

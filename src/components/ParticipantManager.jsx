@@ -14,8 +14,11 @@ export default function ParticipantManager() {
   const [editingId, setEditingId] = useState(null)
   const [editName, setEditName] = useState('')
 
+  // Manual reload is used after add/edit/delete actions so the admin list always
+  // reflects the database as the source of truth after a write.
   async function load() {
     setLoading(true)
+    setError(null)
     const { data, error } = await supabase
       .from('participants')
       .select('id, name, token, is_admin')
@@ -25,7 +28,26 @@ export default function ParticipantManager() {
     setLoading(false)
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    let active = true
+
+    // Initial load waits for Supabase before setting state, avoiding the React
+    // lint warning about synchronous setState calls inside effects.
+    async function loadInitialParticipants() {
+      const { data, error } = await supabase
+        .from('participants')
+        .select('id, name, token, is_admin')
+        .order('name', { ascending: true })
+
+      if (!active) return
+      if (error) setError(error.message)
+      else setParticipants(data)
+      setLoading(false)
+    }
+
+    loadInitialParticipants()
+    return () => { active = false }
+  }, [])
 
   async function addParticipant(e) {
     e.preventDefault()

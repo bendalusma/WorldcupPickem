@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useAuth } from '../lib/AuthProvider'
+import { useAuth } from '../lib/useAuth'
 import ParticipantManager from '../components/ParticipantManager'
+import ResultsManager from '../components/ResultsManager'
 
 function AdminLogin() {
   const { signIn } = useAuth()
@@ -48,35 +49,44 @@ function AdminLogin() {
 
 function Admin() {
   const { session, isAdmin, loading, signOut } = useAuth()
+  const [tab, setTab] = useState('participants')
 
-  if (loading) {
-    return (
-      <section className="page">
-        <h2>Admin</h2>
-        <p className="muted">Chargement…</p>
-      </section>
-    )
-  }
+  if (loading) return (
+    <section className="page">
+      <h2>Admin</h2>
+      <p className="muted">Chargement…</p>
+    </section>
+  )
 
   if (!session) return <AdminLogin />
 
-  if (!isAdmin) {
-    return (
-      <section className="page">
-        <h2>Admin</h2>
-        <p className="error">Ce compte n'est pas administrateur.</p>
-        <button className="btn-secondary" onClick={signOut}>Se déconnecter</button>
-      </section>
-    )
-  }
+  if (!isAdmin) return (
+    <section className="page">
+      <h2>Admin</h2>
+      <p className="error">Ce compte n'est pas administrateur.</p>
+      <button className="btn-secondary" onClick={signOut}>Se déconnecter</button>
+    </section>
+  )
 
   return (
     <section className="page">
       <div className="page-head">
-        <h2>Admin — Participants</h2>
+        <h2>Admin</h2>
         <button className="btn-secondary" onClick={signOut}>Se déconnecter</button>
       </div>
-      <ParticipantManager />
+
+      <div className="admin-tabs">
+        <button
+          className={`admin-tab${tab === 'participants' ? ' active' : ''}`}
+          onClick={() => setTab('participants')}
+        >Participants</button>
+        <button
+          className={`admin-tab${tab === 'results' ? ' active' : ''}`}
+          onClick={() => setTab('results')}
+        >Résultats</button>
+      </div>
+
+      {tab === 'participants' ? <ParticipantManager /> : <ResultsManager />}
     </section>
   )
 }
