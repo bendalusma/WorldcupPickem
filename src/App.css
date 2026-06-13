@@ -5,18 +5,105 @@
   background: var(--bg);
 }
 
+/* --- Branded app header with a trophy-style World Cup mark --- */
 .app-header {
-  background: var(--accent);
+  background:
+    radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.18), transparent 28%),
+    linear-gradient(135deg, #075c2b 0%, #0a7d3c 48%, #0f9f55 100%);
   color: #fff;
-  padding: 18px 16px;
-  text-align: center;
+  padding: 20px 16px 22px;
+  position: relative;
+  overflow: hidden;
 }
 
-.app-header h1 {
+.app-header::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  bottom: -54px;
+  width: 150px;
+  height: 150px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.world-cup-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08));
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+  flex-shrink: 0;
+}
+
+.world-cup-icon {
+  width: 34px;
+  height: 46px;
+  overflow: visible;
+}
+
+.world-cup-globe {
+  fill: #f7df73;
+  stroke: #fff4b8;
+  stroke-width: 3;
+}
+
+.world-cup-body,
+.world-cup-stem {
+  fill: #d9a826;
+  stroke: #fff1a8;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+.world-cup-relief {
+  fill: none;
+  stroke: #fff3aa;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.world-cup-base {
+  fill: #185f36;
+  stroke: #d7b24a;
+  stroke-width: 2;
+}
+
+.brand-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
+  line-height: 1.05;
+}
+
+.brand-main {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.brand-subtitle {
+  margin-top: 4px;
+  color: #d8f5e2;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
 }
 
 .tabbar {
