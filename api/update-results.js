@@ -1,6 +1,8 @@
 // Vercel serverless function — called by the daily cron (vercel.json) or manually.
-// Fetches finished World Cup matches from football-data.org and writes W/D/L
-// results to Supabase. Skips any match where result_locked = true.
+/* global process */
+// Fetches current World Cup match states from football-data.org and writes live
+// scores plus final W/D/L results to Supabase. Skips any match where
+// result_locked = true.
 //
 // Required env vars (set in Vercel dashboard, NOT prefixed with VITE_):
 //   VITE_SUPABASE_URL        — your Supabase project URL
@@ -70,22 +72,23 @@ export default async function handler(req, res) {
     .eq('result_locked', true)
   const lockedIds = new Set((lockedRows ?? []).map(r => r.external_id))
 
-  const finished = matches.filter(m => m.status === 'FINISHED' && !lockedIds.has(m.id))
+  const writableMatches = matches.filter(m => !lockedIds.has(m.id))
 
   let updated = 0
   let skipped = 0
 
-  for (const m of finished) {
+  for (const m of writableMatches) {
     const round = toRound(m.stage, m.matchday)
     if (!round) { skipped++; continue }
     const result = toResult(m.status, m.score)
-    if (!result) { skipped++; continue }
 
+    // Update live score/status for every unlocked match. Only finished matches
+    // receive a W/D/L result; timed or in-progress matches keep result as null.
     const { error } = await supabase
       .from('matches')
       .update({
         result,
-        status: 'FINISHED',
+        status: m.status,
         home_score: m.score?.fullTime?.home ?? null,
         away_score: m.score?.fullTime?.away ?? null,
       })
@@ -99,7 +102,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const summary = { updated, skipped, total_finished: finished.length }
+  const summary = { updated, skipped, total_checked: writableMatches.length }
   console.log('update-results:', summary)
   return res.status(200).json(summary)
 }

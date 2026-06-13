@@ -21,7 +21,56 @@ function groupBadgeClass(group) {
   return group ? ` group-badge-${group.toLowerCase()}` : ''
 }
 
-export default function MatchRow({ match }) {
+function pickPercent(count, total) {
+  return total > 0 ? Math.round((count / total) * 100) : 0
+}
+
+function PickBreakdown({ match, stats }) {
+  const total = stats?.total ?? 0
+  const homePct = pickPercent(stats?.W ?? 0, total)
+  const drawPct = pickPercent(stats?.D ?? 0, total)
+  const awayPct = pickPercent(stats?.L ?? 0, total)
+
+  // The first two result rows use this prototype bar to test whether crowd-pick
+  // proportions feel useful before expanding the feature to every match.
+  return (
+    <div className="pick-breakdown" aria-label={`Répartition des pronostics pour ${match.home_team} contre ${match.away_team}`}>
+      <div className="pick-breakdown-meta">
+        <span>{total} vote{total > 1 ? 's' : ''}</span>
+      </div>
+      {total > 0 ? (
+        <>
+          <div className="pick-split-bar">
+            <span className="pick-split pick-split-home" style={{ flexGrow: homePct || 0.5 }} />
+            <span className="pick-split pick-split-draw" style={{ flexGrow: drawPct || 0.5 }} />
+            <span className="pick-split pick-split-away" style={{ flexGrow: awayPct || 0.5 }} />
+          </div>
+          <div className="pick-breakdown-labels">
+            <span className="pick-legend-item pick-legend-home">
+              <span className="pick-legend-dot" aria-hidden="true" />
+              <span>{match.home_team}</span>
+              <strong>{homePct}%</strong>
+            </span>
+            <span className="pick-legend-item pick-legend-draw">
+              <span className="pick-legend-dot" aria-hidden="true" />
+              <span>Nul</span>
+              <strong>{drawPct}%</strong>
+            </span>
+            <span className="pick-legend-item pick-legend-away">
+              <span className="pick-legend-dot" aria-hidden="true" />
+              <span>{match.away_team}</span>
+              <strong>{awayPct}%</strong>
+            </span>
+          </div>
+        </>
+      ) : (
+        <p className="pick-breakdown-empty">Aucun pronostic révélé pour ce match.</p>
+      )}
+    </div>
+  )
+}
+
+export default function MatchRow({ match, pickStats = null, showPickStatsHeading = false }) {
   const live = match.status === 'IN_PLAY' || match.status === 'PAUSED'
   const finished = match.status === 'FINISHED'
   const hasScore = match.home_score != null && match.away_score != null
@@ -54,6 +103,11 @@ export default function MatchRow({ match }) {
         <Crest url={match.away_crest} code={match.away_team} />
         <span className="team-code">{match.away_team}</span>
       </div>
+
+      {showPickStatsHeading && (
+        <div className="pick-breakdown-section-title">Répartition des pronostics</div>
+      )}
+      {pickStats && <PickBreakdown match={match} stats={pickStats} />}
     </div>
   )
 }

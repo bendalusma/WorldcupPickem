@@ -23,6 +23,15 @@ participants, backfill phone picks, and enter or override match results.
   or hides that round's matches.
 - Expanded result rounds stay chronological, but matches are subdivided by day
   and group-stage rows show a compact `Groupe A`/`Groupe B` style badge.
+- Revealed matches on the results screen include a crowd-pick breakdown:
+  home-win, draw, and away-win proportions display as a horizontal split bar.
+- Live score flow: Vercel cron calls `/api/update-results` every 5 minutes to
+  sync football-data.org into Supabase, and the Results page polls Supabase every
+  minute while open.
+- The `Picks` tab shows transparent person-by-person choices for revealed
+  matches, organized by group dropdowns and game dropdowns; each game includes
+  flags, result context, and bottom-filled pick buckets for home win, draw, and
+  away win.
 - Participant-facing copy should stay in French.
 - The app is designed mobile-first because Ronald and participants will likely
   use it from phones.
