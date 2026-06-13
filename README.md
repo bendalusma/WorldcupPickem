@@ -16,7 +16,8 @@ participants, backfill phone picks, and enter or override match results.
 ## UI Decisions
 
 - The app header uses the title `Jeu Pronostics` with `Just for Fun` beneath it
-  and a trophy-style World Cup mark instead of the previous soccer-ball emoji.
+  and the local `public/world-cup-trophy.png` trophy image instead of the
+  previous soccer-ball emoji. Source: PNGAll World Cup Trophy PNG.
 - The results screen now uses collapsible round sections. Each round shows a
   full-width dropdown button with an arrow and match count; clicking it expands
   or hides that round's matches.

@@ -17,9 +17,9 @@ export const ROUND_POINTS = {
 
 // French labels for each round (used in the UI).
 export const ROUND_LABELS = {
-  group_1: 'Phase de Groupe — Tour 1',
-  group_2: 'Phase de Groupe — Tour 2',
-  group_3: 'Phase de Groupe — Tour 3',
+  group_1: 'Phase de Groupe : Tour 1',
+  group_2: 'Phase de Groupe : Tour 2',
+  group_3: 'Phase de Groupe : Tour 3',
   r32: '1/16 de finale',
   r16: '1/8 de finale',
   qf: '1/4 de finale',

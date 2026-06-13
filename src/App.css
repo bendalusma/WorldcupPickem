@@ -38,55 +38,17 @@
 }
 
 .world-cup-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 54px;
-  height: 54px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 50%;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08));
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+  width: 38px;
+  height: 62px;
+  object-fit: contain;
+  filter: drop-shadow(0 9px 14px rgba(0, 0, 0, 0.24));
   flex-shrink: 0;
-}
-
-.world-cup-icon {
-  width: 34px;
-  height: 46px;
-  overflow: visible;
-}
-
-.world-cup-globe {
-  fill: #f7df73;
-  stroke: #fff4b8;
-  stroke-width: 3;
-}
-
-.world-cup-body,
-.world-cup-stem {
-  fill: #d9a826;
-  stroke: #fff1a8;
-  stroke-linejoin: round;
-  stroke-width: 2.5;
-}
-
-.world-cup-relief {
-  fill: none;
-  stroke: #fff3aa;
-  stroke-linecap: round;
-  stroke-width: 3;
-}
-
-.world-cup-base {
-  fill: #185f36;
-  stroke: #d7b24a;
-  stroke-width: 2;
 }
 
 .brand-title {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   margin: 0;
   line-height: 1.05;
 }
@@ -100,10 +62,11 @@
 .brand-subtitle {
   margin-top: 4px;
   color: #d8f5e2;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: none;
 }
 
 .tabbar {
