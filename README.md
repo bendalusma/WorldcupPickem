@@ -37,6 +37,8 @@ participants, backfill phone picks, and enter or override match results.
   team columns so the match header stays aligned on mobile.
 - Participant-facing link copy should say `lien personnel unique` and show
   `/p/<code-personnel>` as the example pattern instead of a person-name URL.
+- The Admin > Participants list should stay compact; the copy button alone is
+  enough there, so avoid adding extra `/p/<code-personnel>` helper text in-row.
 - Participant-facing copy should stay in French.
 - The app is designed mobile-first because Ronald and participants will likely
   use it from phones.

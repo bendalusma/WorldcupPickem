@@ -891,18 +891,6 @@ input:focus {
   flex-wrap: wrap;
 }
 
-.participant-link-hint {
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.participant-link-hint code {
-  padding: 2px 5px;
-  border-radius: 6px;
-  background: #f3f4f6;
-}
-
 .live-dot {
   width: 8px;
   height: 8px;

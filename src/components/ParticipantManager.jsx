@@ -145,11 +145,6 @@ export default function ParticipantManager() {
                       <button className="btn-secondary" onClick={() => copyLink(p.token)}>
                         {copied === p.token ? 'Copié ✓' : 'Copier le lien'}
                       </button>
-                      {/* The hint keeps the link format explicit for admins without
-                          forcing them to infer that the token sits at the end. */}
-                      <span className="participant-link-hint">
-                        <code>/p/&lt;code-personnel&gt;</code>
-                      </span>
                       <button className="btn-secondary" onClick={() => startEdit(p)}>Modifier</button>
                       <button className="btn-danger" onClick={() => removeParticipant(p.id)}>Suppr.</button>
                     </div>
