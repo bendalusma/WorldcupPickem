@@ -41,7 +41,9 @@ export default function MagicLink() {
     <section className="page">
       <h2>Lien invalide</h2>
       <p className="error">{error}</p>
-      <p className="muted">Contactez Ronald pour recevoir votre lien personnel.</p>
+      {/* This fallback keeps the support message aligned with the new
+          "lien personnel unique" wording used across the app. */}
+      <p className="muted">Contactez Ronald pour recevoir votre lien personnel unique.</p>
     </section>
   )
 

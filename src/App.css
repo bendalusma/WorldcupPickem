@@ -885,8 +885,22 @@ input:focus {
 
 .participant-actions {
   display: flex;
+  align-items: center;
   gap: 6px;
   flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.participant-link-hint {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.participant-link-hint code {
+  padding: 2px 5px;
+  border-radius: 6px;
+  background: #f3f4f6;
 }
 
 .live-dot {
@@ -1035,11 +1049,42 @@ input:focus {
 }
 
 .result-teams {
-  display: flex;
+  /* A three-column grid keeps the home team, kickoff, and away team visually
+     balanced so the admin can scan results without the row drifting. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
-  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.result-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.result-team-home {
+  justify-content: flex-start;
+}
+
+.result-team-away {
+  justify-content: flex-end;
+}
+
+.result-team .team-code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-kickoff {
+  justify-self: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 /* --- Leaderboard --- */

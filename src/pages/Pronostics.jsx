@@ -149,10 +149,14 @@ export default function Pronostics() {
     <section className="page">
       <h2>Mes Pronostics</h2>
       <p className="muted">
-        Pour accéder à vos pronostics, ouvrez votre lien personnel envoyé par Ronald sur WhatsApp.
+        Pour accéder à vos pronostics, ouvrez votre lien personnel unique envoyé par Ronald sur WhatsApp.
       </p>
       <div className="placeholder-card" style={{ marginTop: 16 }}>
-        Exemple&nbsp;: <code>https://&lt;app&gt;/p/votre-prenom</code>
+        {/* Show the full link shape so participants can copy the exact path
+            pattern they should expect on Vercel, while keeping the personal
+            token itself generic. */}
+        Exemple&nbsp;:
+        <code>https://worldcup-pickem-gdcnpndhv-ben-dalusma-s-projects.vercel.app/p/&lt;votre-code-personnel&gt;</code>
       </div>
     </section>
   )

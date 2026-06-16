@@ -32,6 +32,11 @@ participants, backfill phone picks, and enter or override match results.
   matches, organized by group dropdowns and game dropdowns; each game includes
   flags, result context, and bottom-filled pick buckets for home win, draw, and
   away win.
+- The Admin > Résultats rows now use the same crest/flag treatment as the
+  participant screens, with the fixture split into home team, kickoff, and away
+  team columns so the match header stays aligned on mobile.
+- Participant-facing link copy should say `lien personnel unique` and show
+  `/p/<code-personnel>` as the example pattern instead of a person-name URL.
 - Participant-facing copy should stay in French.
 - The app is designed mobile-first because Ronald and participants will likely
   use it from phones.

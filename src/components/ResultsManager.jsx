@@ -5,6 +5,13 @@ import { frDateTime } from '../lib/format'
 
 const ROUND_ORDER = ['group_1', 'group_2', 'group_3', 'r32', 'r16', 'qf', 'final4']
 
+function Crest({ url, code }) {
+  // The admin rows use the same crest treatment as the player-facing screens so
+  // the match header reads like a football fixture instead of a plain text list.
+  if (!url) return <span className="crest crest-empty" aria-hidden="true" />
+  return <img className="crest" src={url} alt={code} width="24" height="24" loading="lazy" />
+}
+
 function ResultRow({ match, onSet }) {
   const [saving, setSaving] = useState(false)
 
@@ -17,10 +24,15 @@ function ResultRow({ match, onSet }) {
   return (
     <div className="result-row">
       <div className="result-teams">
-        <span className="team-code">{match.home_team}</span>
-        <span className="muted" style={{ fontSize: 12 }}>vs</span>
-        <span className="team-code">{match.away_team}</span>
-        <span className="muted" style={{ fontSize: 11 }}>{frDateTime(match.kickoff_at)}</span>
+        <span className="result-team result-team-home">
+          <span className="team-code">{match.home_team}</span>
+          <Crest url={match.home_crest} code={match.home_team} />
+        </span>
+        <span className="result-kickoff">{frDateTime(match.kickoff_at)}</span>
+        <span className="result-team result-team-away">
+          <Crest url={match.away_crest} code={match.away_team} />
+          <span className="team-code">{match.away_team}</span>
+        </span>
       </div>
       <div className="pick-btns">
         <button
@@ -56,7 +68,7 @@ export default function ResultsManager() {
     async function loadInitialResults() {
       const { data, error } = await supabase
         .from('matches')
-        .select('id, round, home_team, away_team, kickoff_at, result, result_locked')
+        .select('id, round, home_team, away_team, home_crest, away_crest, kickoff_at, result, result_locked')
         .lte('kickoff_at', new Date().toISOString())
         .order('kickoff_at')
 
