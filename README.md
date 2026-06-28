@@ -25,9 +25,10 @@ participants, backfill phone picks, and enter or override match results.
   and group-stage rows show a compact `Groupe A`/`Groupe B` style badge.
 - Revealed matches on the results screen include a crowd-pick breakdown:
   home-win, draw, and away-win proportions display as a horizontal split bar.
-- Live score flow: Vercel cron calls `/api/update-results` every 5 minutes to
-  sync football-data.org into Supabase, and the Results page polls Supabase every
-  minute while open.
+- Live score flow: Vercel cron calls `/api/update-results` once per day at
+  `03:00 UTC` (which is 11:00 PM in Toronto during daylight saving time) to
+  sync football-data.org into Supabase, and the Results page polls Supabase
+  every minute while open.
 - The `Picks` tab shows transparent person-by-person choices for revealed
   matches, organized by group dropdowns and game dropdowns; each game includes
   flags, result context, and bottom-filled pick buckets for home win, draw, and
